@@ -1,0 +1,146 @@
+/* =============================================
+   IST LMS - Main Stylesheet
+   Neon Blue Dark Theme
+   ============================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: radial-gradient(circle, #0d3a53, #051c2c);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+/* ── MAIN BOX (Login / Signup pages) ── */
+.lms-box {
+    background: rgba(13, 58, 83, 0.6);
+    border: 1px solid #00eaff;
+    border-radius: 20px;
+    padding: 40px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0, 234, 255, 0.2),
+                0 0 60px rgba(0, 234, 255, 0.05);
+}
+
+/* ── LOGO ── */
+.lms-logo {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+.lms-logo span {
+    color: #00eaff;
+    text-shadow: 0 0 10px #00eaff,
+                 0 0 20px #00eaff;
+}
+
+/* ── HEADINGS ── */
+h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: white;
+}
+
+h2 {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 24px;
+}
+
+/* ── INPUT FIELDS ── */
+.input-box {
+    width: 100%;
+    padding: 12px 16px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 234, 255, 0.4);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+    display: block;
+}
+
+.input-box:focus {
+    border-color: #00eaff;
+    background: rgba(0, 234, 255, 0.08);
+    box-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+}
+
+.input-box::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── BUTTONS CONTAINER ── */
+.lms-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+/* ── NEON BUTTON ── */
+.btn-box {
+    padding: 10px 24px;
+    border-radius: 30px;
+    border: 2px solid #00eaff;
+    background: transparent;
+    color: #00eaff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    display: inline-block;
+}
+
+.btn-box:hover {
+    background: #00eaff;
+    color: #08304a;
+    box-shadow: 0 0 12px #00eaff,
+                0 0 35px #00eaff;
+}
+
+/* ── FORM ── */
+form {
+    text-align: left;
+}
+
+/* ── LINK STYLE ── */
+a {
+    color: #00eaff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #051c2c;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #00eaff;
+    border-radius: 10px;
+}
