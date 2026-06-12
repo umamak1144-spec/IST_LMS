@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Login | IST LMS</title>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+
+<body>
+
+<div class="lms-box">
+
+   <div class="lms-logo">&#128216; IST <span>LMS</span></div>
+
+    <h1>Admin Login</h1>
+
+    <form id="loginForm">
+        <input type="email" id="email" class="input-box" placeholder="Admin Email" required>
+        <input type="password" id="password" class="input-box" placeholder="Password" required>
+
+        <p id="msg" style="color:red; margin:6px 0; font-size:14px;"></p>
+
+        <div class="lms-buttons">
+            <button type="submit" class="btn-box">Login</button>
+            <a href="login.html" class="btn-box">Back</a>
+        </div>
+    </form>
+
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const msg = document.getElementById('msg');
+    msg.textContent = 'Logging in...';
+    msg.style.color = '#00eaff';
+
+    const res = await fetch('backend/admin_auth.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            action: 'login',
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        // Save admin info to sessionStorage so dashboard can use it
+        sessionStorage.setItem('adminName', data.name);
+        sessionStorage.setItem('adminId', data.admin_id);
+        window.location.href = 'admin-dashboard.html';
+    } else {
+        msg.style.color = 'red';
+        msg.textContent = data.message;
+    }
+});
+</script>
+
+</body>
+</html>
