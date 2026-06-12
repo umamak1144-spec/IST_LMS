@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | IST LMS</title>
+
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+body{ background: radial-gradient(circle,#0d3a53,#051c2c); color:white; }
+.container{ display:flex; }
+.sidebar{ width:250px; height:100vh; padding:25px; border-right:1px solid #00eaff; background: rgba(0,0,0,0.2); }
+.logo{ font-size:28px; margin-bottom:40px; }
+.logo span{ color:#00eaff; text-shadow:0 0 10px #00eaff; }
+.nav a{ display:block; padding:14px; margin-bottom:12px; text-decoration:none; color:rgba(255,255,255,0.7); border-radius:12px; border:1.5px solid transparent; transition:0.3s; cursor:pointer; }
+.nav a:hover{ color:#00eaff; border:1.5px solid #00eaff; background:rgba(0,234,255,0.1); box-shadow:0 0 12px #00eaff,0 0 25px rgba(0,234,255,0.4); }
+.nav a.active{ color:#00eaff; border:1.5px solid #00eaff; background:rgba(0,234,255,0.15); box-shadow:0 0 15px #00eaff,0 0 35px #00eaff; }
+.main{ flex:1; padding:30px; }
+.topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; border-bottom:1px solid rgba(0,234,255,0.2); padding-bottom:10px; }
+.btn-box{ padding:8px 18px; border-radius:30px; border:2px solid #00eaff; background:transparent; color:#00eaff; text-decoration:none; font-weight:600; transition:0.3s; cursor:pointer; font-size:14px; }
+.btn-box:hover{ background:#00eaff; color:#08304a; box-shadow:0 0 12px #00eaff,0 0 35px #00eaff; }
+.cards{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:30px; }
+.card{ padding:20px; border-radius:15px; background:linear-gradient(145deg,#0d3a53,#051c2c); border-bottom:5px solid #00eaff; box-shadow:0 0 15px rgba(0,234,255,0.2); transition:0.3s; }
+.card:hover{ transform:translateY(-5px); box-shadow:0 0 25px #00eaff; }
+.card h2{ font-size:32px; margin-top:8px; }
+.orange{ border-color:orange; }
+.green{ border-color:#2ecc71; }
+.blue{ border-color:#3498db; }
+.table-box{ background:rgba(13,58,83,0.6); padding:20px; border-radius:15px; border:1px solid rgba(0,234,255,0.2); box-shadow:0 0 20px rgba(0,234,255,0.1); }
+table{ width:100%; margin-top:10px; border-collapse:collapse; }
+th{ background:rgba(0,234,255,0.2); padding:10px; color:#00eaff; text-align:left; }
+td{ padding:10px; border-bottom:1px solid rgba(255,255,255,0.1); }
+.badge{ background:#00eaff; color:#051c2c; padding:4px 10px; border-radius:10px; font-size:12px; }
+.badge.green{ background:#2ecc71; }
+.badge.orange{ background:orange; }
+input, select{ width:100%; padding:10px; margin:10px 0; border-radius:8px; border:1px solid #00eaff; background:transparent; color:white; font-size:14px; }
+input::placeholder{ color:rgba(255,255,255,0.4); }
+.search-box{ margin-bottom:15px; }
+.section{ display:none; animation:fadeIn 0.4s ease; }
+.section.active{ display:block; }
+@keyframes fadeIn{ from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+.msg-box{ padding:10px; border-radius:8px; margin:10px 0; font-size:14px; display:none; }
+.msg-success{ background:rgba(46,204,113,0.2); border:1px solid #2ecc71; color:#2ecc71; display:block; }
+.msg-error{ background:rgba(255,0,0,0.15); border:1px solid red; color:red; display:block; }
+.add-form{ background:rgba(13,58,83,0.5); padding:20px; border-radius:12px; margin-bottom:20px; border:1px solid rgba(0,234,255,0.2); }
+.add-form h3{ margin-bottom:5px; color:#00eaff; }
+.form-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="lms-logo">&#128216; IST <span>LMS</span></div>
+    <div class="nav">
+        <a class="active" onclick="showSection('dash',this)">Dashboard</a>
+        <a onclick="showSection('assign',this)">Assign Book</a>
+        <a onclick="showSection('return',this)">Return Book</a>
+        <a onclick="showSection('books',this)">Books</a>
+        <a onclick="showSection('users',this)">Users</a>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="topbar">
+    <h1 id="pageTitle">Dashboard</h1>
+    <div style="display:flex;align-items:center;gap:15px;">
+        <span id="adminName" style="color:#00eaff;"></span>
+        <a href="index.html" class="btn-box" onclick="sessionStorage.clear()">Sign Out</a>
+    </div>
+</div>
+
+<!-- ── DASHBOARD ── -->
+<div id="dash" class="section active">
+    <div class="cards">
+        <div class="card"><p>Total Books</p><h2 id="statBooks">—</h2></div>
+        <div class="card orange"><p>Books Assigned</p><h2 id="statAssigned">—</h2></div>
+        <div class="card green"><p>Books Returned</p><h2 id="statReturned">—</h2></div>
+        <div class="card blue"><p>Students</p><h2 id="statUsers">—</h2></div>
+    </div>
+
+    <div class="table-box">
+        <h3>Currently Issued Books</h3>
+        <table>
+            <tr><th>#</th><th>Title</th><th>Author</th><th>Student</th><th>Due Date</th><th>Category</th></tr>
+            <tbody id="issuedTableBody"><tr><td colspan="6" style="text-align:center;color:#888;">Loading...</td></tr></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ── ASSIGN BOOK ── -->
+<div id="assign" class="section">
+    <h2 style="margin-bottom:20px;">Assign Book</h2>
+    <div class="add-form">
+        <input id="assignStudent" placeholder="Student ID (e.g. IST101)">
+        <input id="assignBook" placeholder="Book ID (check Books section)">
+        <div id="assignMsg" class="msg-box"></div>
+        <button class="btn-box" onclick="assignBook()">Assign Book</button>
+    </div>
+</div>
+
+<!-- ── RETURN BOOK ── -->
+<div id="return" class="section">
+    <h2 style="margin-bottom:20px;">Return Book</h2>
+    <div class="add-form">
+        <input id="returnStudent" placeholder="Student ID">
+        <input id="returnBook" placeholder="Book ID">
+        <div id="returnMsg" class="msg-box"></div>
+        <button class="btn-box" onclick="returnBook()">Mark as Returned</button>
+    </div>
+</div>
+
+<!-- ── BOOKS ── -->
+<div id="books" class="section">
+    <h2 style="margin-bottom:15px;">Books Management</h2>
+
+    <!-- Add Book Form -->
+    <div class="add-form">
+        <h3>+ Add New Book</h3>
+        <div class="form-row">
+            <input id="bookTitle" placeholder="Title">
+            <input id="bookAuthor" placeholder="Author">
+        </div>
+        <div class="form-row">
+            <input id="bookCategory" placeholder="Category (e.g. Tech, Fiction)">
+            <input id="bookCopies" type="number" placeholder="Number of copies" min="1">
+        </div>
+        <div id="bookMsg" class="msg-box"></div>
+        <button class="btn-box" onclick="addBook()">Add Book</button>
+    </div>
+
+    <!-- Search + Table -->
+    <input class="search-box" id="bookSearch" placeholder="Search books by title, author, category..." oninput="loadBooks()">
+    <div class="table-box">
+        <table>
+            <tr><th>ID</th><th>Title</th><th>Author</th><th>Category</th><th>Available</th><th>Action</th></tr>
+            <tbody id="booksTableBody"><tr><td colspan="6" style="text-align:center;color:#888;">Loading...</td></tr></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ── USERS ── -->
+<div id="users" class="section">
+    <h2 style="margin-bottom:15px;">Registered Students</h2>
+    <div id="usersList" style="color:#888;">Loading...</div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /container -->
+
+<script>
+const API = 'backend/';
+
+// ── On load ──────────────────────────────────
+window.onload = () => {
+    const name = sessionStorage.getItem('adminName');
+    if (name) document.getElementById('adminName').textContent = 'Hi, ' + name;
+    loadStats();
+    loadIssued();
+};
+
+// ── Section switching ─────────────────────────
+function showSection(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+    document.getElementById('pageTitle').textContent = el.textContent;
+
+    if (id === 'books') loadBooks();
+    if (id === 'users') loadUsers();
+}
+
+// ── Load stats cards ──────────────────────────
+async function loadStats() {
+    const r = await fetch(API + 'stats.php');
+    const d = await r.json();
+    document.getElementById('statBooks').textContent    = d.total_books;
+    document.getElementById('statAssigned').textContent = d.books_assigned;
+    document.getElementById('statReturned').textContent = d.books_returned;
+    document.getElementById('statUsers').textContent    = d.total_users;
+}
+
+// ── Load issued books table ───────────────────
+async function loadIssued() {
+    const r = await fetch(API + 'borrowings.php');
+    const rows = await r.json();
+    const tbody = document.getElementById('issuedTableBody');
+
+    if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;">No books currently issued</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = rows.map((row, i) => `
+        <tr>
+            <td>${i+1}</td>
+            <td>${row.title}</td>
+            <td>${row.author}</td>
+            <td>${row.student_name} (${row.student_id})</td>
+            <td>${row.due_date}</td>
+            <td><span class="badge">${row.category}</span></td>
+        </tr>`).join('');
+}
+
+// ── Load all books ────────────────────────────
+async function loadBooks() {
+    const q = document.getElementById('bookSearch').value;
+    const r = await fetch(API + 'books.php?search=' + encodeURIComponent(q));
+    const books = await r.json();
+    const tbody = document.getElementById('booksTableBody');
+
+    if (!books.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;">No books found</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = books.map(b => `
+        <tr>
+            <td>${b.book_id}</td>
+            <td>${b.title}</td>
+            <td>${b.author}</td>
+            <td>${b.category}</td>
+            <td><span class="badge ${b.available_copies > 0 ? 'green' : 'orange'}">${b.available_copies} / ${b.total_copies}</span></td>
+            <td><button class="btn-box" style="font-size:12px;padding:5px 12px;" onclick="deleteBook(${b.book_id})">Delete</button></td>
+        </tr>`).join('');
+}
+
+// ── Add a book ────────────────────────────────
+async function addBook() {
+    const msg = document.getElementById('bookMsg');
+    const r = await fetch(API + 'books.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            title:    document.getElementById('bookTitle').value,
+            author:   document.getElementById('bookAuthor').value,
+            category: document.getElementById('bookCategory').value,
+            copies:   document.getElementById('bookCopies').value || 1
+        })
+    });
+    const d = await r.json();
+    showMsg(msg, d.message, d.success);
+    if (d.success) { loadBooks(); loadStats(); }
+}
+
+// ── Delete a book ─────────────────────────────
+async function deleteBook(id) {
+    if (!confirm('Delete this book?')) return;
+    await fetch(API + 'books.php?id=' + id, { method: 'DELETE' });
+    loadBooks();
+    loadStats();
+}
+
+// ── Assign book ───────────────────────────────
+async function assignBook() {
+    const msg = document.getElementById('assignMsg');
+    const r = await fetch(API + 'borrowings.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            action:     'assign',
+            student_id: document.getElementById('assignStudent').value,
+            book_id:    document.getElementById('assignBook').value
+        })
+    });
+    const d = await r.json();
+    showMsg(msg, d.message, d.success);
+    if (d.success) { loadStats(); loadIssued(); }
+}
+
+// ── Return book ───────────────────────────────
+async function returnBook() {
+    const msg = document.getElementById('returnMsg');
+    const r = await fetch(API + 'borrowings.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            action:     'return',
+            student_id: document.getElementById('returnStudent').value,
+            book_id:    document.getElementById('returnBook').value
+        })
+    });
+    const d = await r.json();
+    showMsg(msg, d.message, d.success);
+    if (d.success) { loadStats(); loadIssued(); }
+}
+
+// ── Load users ────────────────────────────────
+async function loadUsers() {
+    // Reuse stats to get count, but show via books search trick
+    const r = await fetch(API + 'stats.php');
+    const d = await r.json();
+    document.getElementById('usersList').innerHTML =
+        `<p style="color:#00eaff;">Total registered students: <strong>${d.total_users}</strong></p>
+         <p style="margin-top:10px;color:rgba(255,255,255,0.5);">Use the Assign/Return sections to manage borrowings.</p>`;
+}
+
+// ── Utility: show message ─────────────────────
+function showMsg(el, text, success) {
+    el.textContent = text;
+    el.className = 'msg-box ' + (success ? 'msg-success' : 'msg-error');
+    setTimeout(() => { el.className = 'msg-box'; el.textContent = ''; }, 3000);
+}
+</script>
+
+</body>
+</html>
